@@ -1,124 +1,84 @@
-package com.skooltchdev.multiplechoicequiz;
+package com.example.manue.myapplication;
 
+import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class QuizActivity extends AppCompatActivity {
+public class Rijeka_Quiz extends AppCompatActivity {
 
     private QuestionLibrary mQuestionLibrary = new QuestionLibrary();
 
-    private TextView mScoreView;
-    private TextView mQuestionView;
-    private Button mButtonChoice1;
-    private Button mButtonChoice2;
-    private Button mButtonChoice3;
-
-    private String mAnswer;
-    private int mScore = 0;
-    private int mQuestionNumber = 0;
+    int brojacTick = 0; // varijabla korištena za ispis rezultata; TOČNIH
+    int brojacNoTick = 0; // varijabla korištena za ispis rezultata; NETOČNIH
+    boolean stanje;
+    byte brPitanja = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quiz);
-
-        mScoreView = (TextView)findViewById(R.id.score);
-        mQuestionView = (TextView)findViewById(R.id.question);
-        mButtonChoice1 = (Button)findViewById(R.id.choice1);
-        mButtonChoice2 = (Button)findViewById(R.id.choice2);
-        mButtonChoice3 = (Button)findViewById(R.id.choice3);
-
-        updateQuestion();
-
-        //Start of Button Listener for Button1
-        mButtonChoice1.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                //My logic for Button goes in here
-
-                if (mButtonChoice1.getText() == mAnswer){
-                    mScore = mScore + 1;
-                    updateScore(mScore);
-                    updateQuestion();
-                //This line of code is optiona
-                    Toast.makeText(QuizActivity.this, "correct", Toast.LENGTH_SHORT).show();
-
-                }else {
-                    Toast.makeText(QuizActivity.this, "wrong", Toast.LENGTH_SHORT).show();
-                    updateQuestion();
-                }
-            }
-        });
-
-        //End of Button Listener for Button1
-
-        //Start of Button Listener for Button2
-        mButtonChoice2.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                //My logic for Button goes in here
-
-                if (mButtonChoice2.getText() == mAnswer){
-                    mScore = mScore + 1;
-                    updateScore(mScore);
-                    updateQuestion();
-                    //This line of code is optiona
-                    Toast.makeText(QuizActivity.this, "correct", Toast.LENGTH_SHORT).show();
-
-                }else {
-                    Toast.makeText(QuizActivity.this, "wrong", Toast.LENGTH_SHORT).show();
-                    updateQuestion();
-                }
-            }
-        });
-
-        //End of Button Listener for Button2
-
-
-        //Start of Button Listener for Button3
-        mButtonChoice3.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                //My logic for Button goes in here
-
-                if (mButtonChoice3.getText() == mAnswer){
-                    mScore = mScore + 1;
-                    updateScore(mScore);
-                    updateQuestion();
-                    //This line of code is optiona
-                    Toast.makeText(QuizActivity.this, "correct", Toast.LENGTH_SHORT).show();
-
-                }else {
-                    Toast.makeText(QuizActivity.this, "wrong", Toast.LENGTH_SHORT).show();
-                    updateQuestion();
-                }
-            }
-        });
-
-        //End of Button Listener for Button3
-
-
-
-
-
+        program();
     }
 
-    private void updateQuestion(){
-        mQuestionView.setText(mQuestionLibrary.getQuestion(mQuestionNumber));
-        mButtonChoice1.setText(mQuestionLibrary.getChoice1(mQuestionNumber));
-        mButtonChoice2.setText(mQuestionLibrary.getChoice2(mQuestionNumber));
-        mButtonChoice3.setText(mQuestionLibrary.getChoice3(mQuestionNumber));
+    public void program() {
+        setContentView(R.layout.activity_rijeka__quiz);
+        RelativeLayout relativePitanjaTN = (RelativeLayout) findViewById(R.id.relativePitanjaTocnoNetocno);  // Objekt za RELATIVE LAYOUT
+        Button btnTocno = (Button) findViewById(R.id.buttonTocno);                                           // Objekt za button 'TOČNO'
+        Button btnNetocno = (Button) findViewById(R.id.buttonNetocno);                                       // Objekt za button 'NETOČNO'
 
-        mAnswer = mQuestionLibrary.getCorrectAnswer(mQuestionNumber);
-        mQuestionNumber++;
+        // 1. PITANJE  - TOČNO/NETOČNO *******
+        if (brPitanja == 1) {
+            relativePitanjaTN.setVisibility(View.VISIBLE);
+            promjenaTekstaTočnoNetočno("Crkva Gospe Trsatske najstarije je hrvatsko marijansko svetište.");
+            stanje = true;
+        }
+
+
+        // 2. PITANJE  - TOČNO/NETOČNO *******
+        if (brPitanja == 2) {
+            promjenaTekstaTočnoNetočno("Srednjovjekovna crkva Uznesenja Marijina sagrađena je na temeljima rimskih termi i starokršćanske bazilike iz 5.st.");
+            stanje = true;
+            //    buttonListener(stanje);
+        }
     }
 
+    public void Tick() {  // ISPIS TOČNIH ODGOVORA, UZ 'KVAČICU'
 
-    private void updateScore(int point) {
-        mScoreView.setText("" + mScore);
+        brojacTick++;
+        TextView Tick = (TextView) findViewById(R.id.trueText);
+        Tick.setText(brojacTick);
+    }
+
+    public void NoTick() { // ISPIS NETOČNIH ODGOVORA, UZ 'X'
+        brojacNoTick++;
+        TextView NoTick = (TextView) findViewById(R.id.falseText);
+        NoTick.setText(brojacNoTick);
+    }
+
+    public void promjenaTekstaTočnoNetočno(String y) {
+        TextView pitanjeText = (TextView) findViewById(R.id.pitanjeText);
+        pitanjeText.setText(y);
+    }
+
+    public void btnFlaseClick(View view) {
+        if (stanje == true) NoTick();
+        else Tick();
+        brPitanja++;
+        program();
+    }
+
+    public void btnTrueClick(View view) {
+        if (stanje == false) NoTick();
+        else Tick();
+        brPitanja++;
+        program();
     }
 }
+
+
+
+
